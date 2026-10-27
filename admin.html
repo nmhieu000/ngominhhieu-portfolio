@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Admin — Ngô Minh Hiếu</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="site.css">
+<style>
+/* Admin: a dark "race control" panel — sign in, then add or remove laps (projects). */
+body{margin:0;background:#0E0E14;color:#F4F1EA;font-family:var(--sans);color-scheme:dark}
+.adm{width:min(960px,92vw);margin:0 auto;padding:28px 0 80px}
+.adm header{display:flex;justify-content:space-between;align-items:center;gap:12px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;padding-bottom:18px;border-bottom:1px solid rgba(244,241,234,.14)}
+.adm header a{color:#F4F1EA;text-decoration:none;font-weight:700}
+.adm header b{color:var(--yellow)}
+.adm h1{font-family:var(--display);font-style:italic;text-transform:uppercase;font-size:clamp(32px,5vw,56px);line-height:.95;margin:28px 0 6px}
+.adm .sub{color:#A09E96;margin:0 0 24px}
+.panel{background:#16161D;border:1px solid rgba(244,241,234,.14);border-radius:10px;padding:22px 24px;margin-top:20px}
+.panel h2{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--yellow);margin:0 0 16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid .full{grid-column:1/-1}
+label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:#A09E96}
+label small{color:#6F6F69}
+input[type=text],input[type=email],input[type=password],textarea{background:#0E0E14;border:1px solid #2E2E38;border-radius:6px;color:#F4F1EA;font:inherit;font-size:14px;padding:10px 12px}
+input:focus,textarea:focus{outline:2px solid var(--yellow);outline-offset:0;border-color:transparent}
+input[type=color]{width:56px;height:40px;border:1px solid #2E2E38;border-radius:6px;background:#0E0E14;padding:3px}
+input[type=file]{color:#A09E96;font-size:13px}
+fieldset{border:1px solid #2E2E38;border-radius:8px;padding:14px;margin:0}
+legend{font-family:var(--mono);font-size:12px;letter-spacing:.08em;padding:0 6px;color:#F4F1EA}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--yellow);color:#141414;border:0;border-radius:999px;padding:11px 20px;font:700 13px var(--mono);letter-spacing:.06em;cursor:pointer;text-decoration:none}
+.btn.ghost{background:none;color:#F4F1EA;border:1px solid rgba(244,241,234,.3)}
+.btn.danger{background:none;color:#FF6B6B;border:1px solid rgba(255,107,107,.4);padding:7px 14px}
+.btn:disabled{opacity:.5;cursor:wait}
+.msg{font-size:14px;margin-top:12px;min-height:1.2em}
+.msg.err{color:#FF6B6B}.msg.ok{color:#39B54A}
+.thumbs{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.thumbs img{width:72px;height:72px;object-fit:cover;border-radius:6px;border:1px solid #2E2E38}
+.list{display:flex;flex-direction:column;gap:10px}
+.item{display:grid;grid-template-columns:64px 1fr auto;gap:14px;align-items:center;padding:10px;border:1px solid #2E2E38;border-left:4px solid var(--c);border-radius:8px}
+.item img{width:64px;height:48px;object-fit:cover;border-radius:4px}
+.item b{display:block}.item span{color:#A09E96;font-size:13px}
+.item a{color:inherit}
+.empty{color:#6F6F69;font-size:14px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:18px}
+[hidden]{display:none!important}
+@media (max-width:640px){.grid{grid-template-columns:1fr}.item{grid-template-columns:48px 1fr}.item .btn{grid-column:1/-1;justify-self:start}}
+</style>
+</head>
+<body>
+<div class="adm">
+  <header><a href="index.html">NGÔ MINH HIẾU <b>/ ADMIN</b></a><span id="who"></span></header>
+  <h1>Race control</h1>
+  <p class="sub">Thêm dự án mới vào portfolio. Dự án sẽ xuất hiện như một chặng (lap) mới trên trang chủ.</p>
+
+  <section class="panel" id="auth" hidden>
+    <h2 id="auth-title">Đăng nhập quản trị</h2>
+    <form id="login-form" class="grid">
+      <label id="email-wrap">Email<input type="email" id="email" autocomplete="username" required></label>
+      <label>Mật khẩu<input type="password" id="password" autocomplete="current-password" required minlength="6"></label>
+      <div class="full row" style="margin-top:4px"><button class="btn" type="submit" id="login-btn">Đăng nhập</button><button class="btn ghost" type="button" id="forgot">Quên mật khẩu</button></div>
+    </form>
+    <p class="msg" id="auth-msg" role="status"></p>
+  </section>
+
+  <div id="app" hidden>
+    <section class="panel">
+      <h2>Thêm dự án</h2>
+      <form id="project-form" class="grid">
+        <label>Tên dự án *<input type="text" name="name" required maxlength="80" placeholder="VD: VieVu"></label>
+        <label>Đường dẫn (slug)<input type="text" name="slug" maxlength="60" placeholder="tự tạo từ tên"><small>project.html?id=<span id="slug-preview">…</span></small></label>
+        <label>Màu nhấn<input type="color" name="color" value="#F5D000"></label>
+        <span></span>
+        <label class="full">Ảnh bìa * <small>JPG / PNG / WebP — dùng làm poster trên trang chủ</small><input type="file" name="hero" accept="image/*" required><span class="thumbs" id="hero-thumbs"></span></label>
+        <label class="full">Ảnh trang dự án <small>Các trang Figma xuất ra, hiển thị theo thứ tự đã chọn</small><input type="file" name="pages" accept="image/*" multiple><span class="thumbs" id="pages-thumbs"></span></label>
+
+        <fieldset class="full"><legend>English</legend><div class="grid">
+          <label class="full">Tagline<input type="text" name="tagEn" maxlength="140" placeholder="Plan your trip, your way."></label>
+          <label class="full">Kicker<input type="text" name="kickerEn" maxlength="160" placeholder="AI travel assistant · UX/UI · From research to interface"></label>
+          <label>Team<input type="text" name="team_en" placeholder="4 members"></label>
+          <label>Timeline<input type="text" name="time_en" placeholder="01/2025 – 04/2025"></label>
+          <label>Role<input type="text" name="role_en" placeholder="Research · Visual direction"></label>
+          <label>Platform<input type="text" name="platform_en" placeholder="Mobile app"></label>
+        </div></fieldset>
+
+        <fieldset class="full"><legend>Tiếng Việt <small style="color:#6F6F69">(để trống sẽ dùng bản tiếng Anh)</small></legend><div class="grid">
+          <label class="full">Tagline<input type="text" name="tagVi" maxlength="140"></label>
+          <label class="full">Kicker<input type="text" name="kickerVi" maxlength="160"></label>
+          <label>Nhóm<input type="text" name="team_vi" placeholder="4 thành viên"></label>
+          <label>Thời gian<input type="text" name="time_vi"></label>
+          <label>Vai trò<input type="text" name="role_vi"></label>
+          <label>Nền tảng<input type="text" name="platform_vi" placeholder="Ứng dụng di động"></label>
+        </div></fieldset>
+
+        <div class="full row"><button class="btn" type="submit" id="save-btn">Thêm dự án →</button></div>
+      </form>
+      <p class="msg" id="form-msg" role="status"></p>
+    </section>
+
+    <section class="panel">
+      <h2>Dự án đã thêm</h2>
+      <div class="list" id="list"></div>
+      <p class="empty" style="margin-top:14px">6 dự án gốc (VieVu, MAYogu, ECOBI, MAYticket, RetroTunes, Rikkeisoft) nằm trong mã nguồn và không hiển thị ở đây.</p>
+    </section>
+  </div>
+</div>
+
+<script type="module">
+import { login, logout, getUser, handleAuthCallback, acceptInvite, updateUser, requestPasswordRecovery, AuthError, MissingIdentityError } from "https://esm.sh/@netlify/identity@2";
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+const msg = (el, text, kind = "") => { el.textContent = text; el.className = "msg " + kind; };
+const slugify = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/gi, "d").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60);
+
+// "login" | "invite" (set password from invite link) | "recovery" (set new password)
+let mode = "login", inviteToken = null;
+
+function showAuth(m, text = "", kind = "") {
+  mode = m;
+  $("auth").hidden = false; $("app").hidden = true; $("who").innerHTML = "";
+  $("auth-title").textContent = m === "login" ? "Đăng nhập quản trị" : m === "invite" ? "Tạo mật khẩu cho tài khoản được mời" : "Đặt mật khẩu mới";
+  $("email-wrap").hidden = m !== "login"; $("email").required = m === "login";
+  $("forgot").hidden = m !== "login";
+  $("login-btn").textContent = m === "login" ? "Đăng nhập" : "Lưu mật khẩu";
+  $("password").autocomplete = m === "login" ? "current-password" : "new-password";
+  msg($("auth-msg"), text, kind);
+}
+
+async function showApp(user) {
+  if (!user.roles?.includes("admin")) {
+    showAuth("login", `Tài khoản ${user.email} chưa có quyền admin. Thêm vai trò "admin" cho tài khoản này trong mục Identity trên Netlify.`, "err");
+    $("who").innerHTML = `<button class="btn ghost" id="logout" style="padding:6px 12px">Đăng xuất</button>`;
+    $("logout").onclick = doLogout;
+    return;
+  }
+  $("auth").hidden = true; $("app").hidden = false;
+  $("who").innerHTML = `${esc(user.email)} · <button class="btn ghost" id="logout" style="padding:6px 12px">Đăng xuất</button>`;
+  $("logout").onclick = doLogout;
+  loadList();
+}
+
+async function doLogout() { await logout().catch(() => {}); showAuth("login"); }
+
+$("login-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const btn = $("login-btn"); btn.disabled = true; msg($("auth-msg"), "");
+  try {
+    let user;
+    if (mode === "login") user = await login($("email").value.trim(), $("password").value);
+    else if (mode === "invite") user = await acceptInvite(inviteToken, $("password").value);
+    else user = await updateUser({ password: $("password").value });
+    $("password").value = "";
+    history.replaceState(null, "", location.pathname);
+    await showApp(user);
+  } catch (err) {
+    if (err instanceof MissingIdentityError) msg($("auth-msg"), "Netlify Identity chưa được bật cho site này.", "err");
+    else if (err instanceof AuthError) msg($("auth-msg"), err.status === 401 ? "Sai email hoặc mật khẩu." : err.message, "err");
+    else msg($("auth-msg"), String(err.message || err), "err");
+  } finally { btn.disabled = false; }
+});
+
+$("forgot").addEventListener("click", async () => {
+  const email = $("email").value.trim();
+  if (!email) return msg($("auth-msg"), "Nhập email trước rồi bấm Quên mật khẩu.", "err");
+  try { await requestPasswordRecovery(email); msg($("auth-msg"), "Đã gửi email đặt lại mật khẩu.", "ok"); }
+  catch (err) { msg($("auth-msg"), err.message, "err"); }
+});
+
+/* ---------- project list ---------- */
+async function loadList() {
+  const rows = await fetch("/api/projects").then(r => r.ok ? r.json() : []).catch(() => []);
+  $("list").innerHTML = rows.length ? rows.map(r => `<div class="item" style="--c:${esc(r.color)}">
+      <img src="${esc(r.heroImage)}" alt="">
+      <div><b><a href="project.html?id=${encodeURIComponent(r.slug)}" target="_blank">${esc(r.name)}</a></b><span>${esc(r.tagEn || r.kickerEn)} · ${r.pages.length} ảnh</span></div>
+      <button class="btn danger" data-id="${r.id}" data-name="${esc(r.name)}">Xoá</button></div>`).join("")
+    : `<p class="empty">Chưa có dự án nào được thêm.</p>`;
+}
+
+$("list").addEventListener("click", async e => {
+  const b = e.target.closest("button[data-id]"); if (!b) return;
+  if (!confirm(`Xoá dự án "${b.dataset.name}"? Ảnh của dự án cũng sẽ bị xoá.`)) return;
+  b.disabled = true;
+  const res = await fetch(`/api/projects/${b.dataset.id}`, { method: "DELETE" });
+  if (res.status === 401) return showAuth("login", "Phiên đăng nhập đã hết hạn.", "err");
+  if (!res.ok) { b.disabled = false; return alert("Không xoá được: " + await res.text()); }
+  loadList();
+});
+
+/* ---------- add project ---------- */
+const form = $("project-form");
+form.name.addEventListener("input", () => { $("slug-preview").textContent = slugify(form.slug.value || form.name.value) || "…"; });
+form.slug.addEventListener("input", () => { $("slug-preview").textContent = slugify(form.slug.value || form.name.value) || "…"; });
+const preview = (input, box) => input.addEventListener("change", () => {
+  box.innerHTML = [...input.files].map(f => `<img src="${URL.createObjectURL(f)}" alt="">`).join("");
+});
+preview(form.hero, $("hero-thumbs")); preview(form.pages, $("pages-thumbs"));
+
+const MAX = 4 * 1024 * 1024;
+// Functions accept bodies up to a few MB, so large images are re-encoded as WebP before uploading.
+async function shrink(file) {
+  if (file.size <= MAX && ["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"].includes(file.type)) return file;
+  const img = await createImageBitmap(file);
+  for (const [w, q] of [[1920, .86], [1600, .8], [1280, .75]]) {
+    const scale = Math.min(1, w / img.width);
+    const c = new OffscreenCanvas(Math.round(img.width * scale), Math.round(img.height * scale));
+    c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+    const blob = await c.convertToBlob({ type: "image/webp", quality: q });
+    if (blob.size <= MAX) return blob;
+  }
+  throw new Error(`Ảnh "${file.name}" quá lớn, hãy giảm kích thước rồi thử lại.`);
+}
+
+async function upload(file) {
+  const blob = await shrink(file);
+  const res = await fetch("/api/uploads", { method: "POST", headers: { "Content-Type": blob.type }, body: blob });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `Tải ảnh thất bại (${res.status})`);
+  return data.url;
+}
+
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  const btn = $("save-btn"), out = $("form-msg"); btn.disabled = true;
+  try {
+    if (!(await getUser())) return showAuth("login", "Phiên đăng nhập đã hết hạn.", "err");
+    const files = [...form.pages.files];
+    msg(out, "Đang tải ảnh bìa…");
+    const heroImage = await upload(form.hero.files[0]);
+    const pages = [];
+    for (const [i, f] of files.entries()) { msg(out, `Đang tải ảnh ${i + 1}/${files.length}…`); pages.push(await upload(f)); }
+    msg(out, "Đang lưu dự án…");
+    const v = n => form[n].value.trim();
+    const meta = l => ["team", "time", "role", "platform"].map(k => v(`${k}_${l}`));
+    const res = await fetch("/api/projects", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: v("name"), slug: v("slug"), color: form.color.value, heroImage, pages,
+        tagEn: v("tagEn"), tagVi: v("tagVi"), kickerEn: v("kickerEn"), kickerVi: v("kickerVi"), metaEn: meta("en"), metaVi: meta("vi") }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `Lưu thất bại (${res.status})`);
+    form.reset(); $("hero-thumbs").innerHTML = $("pages-thumbs").innerHTML = ""; $("slug-preview").textContent = "…";
+    out.innerHTML = `Đã thêm <b>${esc(data.name)}</b>. <a href="project.html?id=${encodeURIComponent(data.slug)}" target="_blank" style="color:inherit">Xem trang dự án →</a>`;
+    out.className = "msg ok";
+    loadList();
+  } catch (err) { msg(out, err.message, "err"); }
+  finally { btn.disabled = false; }
+});
+
+/* ---------- boot ---------- */
+try {
+  const cb = await handleAuthCallback();
+  if (cb?.type === "invite") { inviteToken = cb.token; showAuth("invite"); }
+  else if (cb?.type === "recovery") showAuth("recovery");
+  else { const user = cb?.user || await getUser(); user ? showApp(user) : showAuth("login"); }
+} catch (err) {
+  showAuth("login", err instanceof MissingIdentityError ? "Netlify Identity chưa được bật cho site này." : err.message, "err");
+}
+</script>
+</body>
+</html>
