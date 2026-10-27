@@ -1,0 +1,18 @@
+[build]
+  # Publish only the static site files, not node_modules / server code.
+  command = "mkdir -p dist && cp *.html *.css *.js *.jpg dist/"
+  publish = "dist"
+
+[functions]
+  directory = "netlify/functions"
+
+# Pages reference images under img/ and pages/, but the files live at the root.
+[[redirects]]
+  from = "/img/*"
+  to = "/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/pages/*"
+  to = "/:splat"
+  status = 200
