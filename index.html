@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ngô Minh Hiếu — UX/UI Portfolio</title>
+<style>img{max-width:100%}body{margin:0}</style>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="site.css">
+<style>
+/* Layout: a single-screen "stage" pinned while the page scrolls; scrolling drives a race car across one long horizontal world of sectors (start → driver sheet → 6 laps → pit stops → parts → finish), with parallax scenery behind and the track in front. */
+:root{--sky1:#0E0E14;--sky2:#1B1A24;--asphalt:#1F1F22;--asphalt2:#262629;--stand:#2A2A33;--stand2:#34343F;--glass:rgba(20,20,20,.72);--glass-line:rgba(244,241,234,.14);--on:#F4F1EA;--on-mute:#A09E96;--trackH:30vh;color-scheme:dark}
+html,body{height:auto}
+body{background:var(--sky1);color:var(--on);overflow-x:hidden}
+.stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden;background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 55%,#2A2730 70%,var(--asphalt) 70%)}
+.spacer{height:300vh}
+.layer{position:absolute;left:0;top:0;height:100%;will-change:transform}
+.stars{width:300%;background-image:radial-gradient(1.2px 1.2px at 20px 30px,#fff 60%,transparent 61%),radial-gradient(1px 1px at 140px 80px,#ddd 60%,transparent 61%),radial-gradient(1.5px 1.5px at 260px 40px,#fff 60%,transparent 61%),radial-gradient(1px 1px at 380px 120px,#ccc 60%,transparent 61%),radial-gradient(1.2px 1.2px at 480px 20px,#fff 60%,transparent 61%);background-size:560px 200px;background-repeat:repeat-x;opacity:.7;height:45%}
+.far{width:400%;bottom:var(--trackH);top:auto;height:34vh;background-repeat:repeat-x;background-position:bottom;background-size:1600px 100%}
+.mid{width:400%;bottom:var(--trackH);top:auto;height:12vh;background-repeat:repeat-x;background-position:bottom;background-size:1200px 100%}
+.track{position:absolute;left:0;right:0;bottom:0;height:var(--trackH);background:linear-gradient(180deg,var(--asphalt2),var(--asphalt) 30%)}
+.track .kerb{position:absolute;left:0;right:0;top:0;height:12px;background:repeating-linear-gradient(90deg,#E10600 0 48px,#F4F1EA 48px 96px);background-size:96px 12px}
+.track .dash{position:absolute;left:0;right:0;top:55%;height:4px;background:repeating-linear-gradient(90deg,rgba(244,241,234,.55) 0 60px,transparent 60px 120px);background-size:120px 4px}
+.track .edge{position:absolute;left:0;right:0;bottom:0;height:10px;background:repeating-linear-gradient(90deg,#F4F1EA 0 40px,#2A2A2A 40px 80px);background-size:80px 10px;opacity:.5}
+.world{position:absolute;left:0;top:0;height:100%;display:flex;will-change:transform}
+.sector{position:relative;flex:0 0 100vw;width:100vw;height:100%;padding:64px 0 calc(var(--trackH) + 84px);display:flex;align-items:center;justify-content:center}
+.sector .in{width:min(92vw,980px);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.card{background:var(--glass);border:1px solid var(--glass-line);border-radius:10px;padding:22px 24px;backdrop-filter:blur(6px)}
+.sector h1{font-size:clamp(44px,8vw,112px);line-height:.92;text-transform:uppercase;font-style:italic;letter-spacing:-.02em}
+.sector h2{font-size:clamp(28px,4.4vw,56px);font-style:italic}
+.sector .lead{color:var(--on-mute);font-size:clamp(15px,1.6vw,18px);max-width:60ch;margin-top:12px}
+.sector .mono{color:var(--yellow)}
+.signpost{position:absolute;left:50%;bottom:calc(var(--trackH) - 4px);transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:0}
+.signpost .board{background:#F4F1EA;color:#141414;font-family:var(--mono);font-size:12px;letter-spacing:.1em;font-weight:700;padding:8px 14px;border:3px solid #141414;border-radius:4px;white-space:nowrap}
+.signpost .pole{width:4px;height:40px;background:#9A9A95}
+.lights{display:inline-flex}
+/* lap card */
+.lapcard{display:grid;grid-template-columns:1.1fr 1fr;gap:20px;align-items:center}
+.lapcard .poster{border-radius:8px;overflow:hidden;border:1px solid var(--glass-line);background:#fff;max-height:52vh}
+.lapcard .poster img{width:100%;height:100%;object-fit:cover;object-position:center}
+.lapcard .n{display:flex;align-items:baseline;gap:12px}
+.lapcard .n .big{font-family:var(--display);font-size:56px;line-height:1;color:transparent;-webkit-text-stroke:2px var(--c)}
+.lapcard .n .mono{color:var(--c);font-weight:700}
+.lapcard h2{margin-top:6px}
+.lapcard .kick{color:var(--on-mute);margin-top:8px;font-size:15px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chips span{font-family:var(--mono);font-size:11px;letter-spacing:.06em;padding:5px 10px;border:1px solid var(--glass-line);border-radius:999px;color:var(--on)}
+.btn{display:inline-block;margin-top:18px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;padding:12px 18px;border-radius:999px;background:var(--c,var(--yellow));color:#141414;font-weight:700}
+.btn:hover{filter:brightness(1.08)}
+/* driver / pit / parts */
+.driver{display:grid;grid-template-columns:1.3fr 1fr;gap:20px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stats div{padding:12px 14px;border:1px solid var(--glass-line);border-radius:6px}
+.stats .k{color:var(--yellow);font-family:var(--mono);font-size:10px;letter-spacing:.1em}
+.stats .v{font-family:var(--mono);font-weight:700;font-size:14px;margin-top:4px}
+.stops{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.stop{padding:14px 16px;border:1px solid var(--glass-line);border-radius:6px;min-width:0}
+.stop .when{font-family:var(--mono);font-size:11px;color:var(--yellow);letter-spacing:.08em}
+.stop b{display:block;margin-top:6px}
+.stop span{display:block;color:var(--on-mute);font-size:13px;margin-top:2px}
+.stop p{color:var(--on-mute);font-size:13px;margin-top:8px}
+.parts{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.parts .chips span{border-color:rgba(245,208,0,.4)}
+.cgrid{margin-top:18px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+/* HUD */
+.hud{position:absolute;left:0;right:0;top:0;z-index:5;padding:12px max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));display:flex;justify-content:space-between;align-items:center;gap:12px;font-family:var(--mono);font-size:12px;letter-spacing:.08em}
+.hud .brand{text-decoration:none;font-weight:700}
+.hud .brand b{color:var(--yellow)}
+.hud .right{display:flex;gap:10px;align-items:center}
+.hud .lang{display:flex;border:1px solid var(--glass-line);border-radius:999px;overflow:hidden;background:var(--glass)}
+.hud .lang button{background:none;border:0;color:var(--on-mute);font-family:var(--mono);font-size:11px;letter-spacing:.08em;padding:5px 10px;cursor:pointer}
+.hud .lang button[aria-pressed="true"]{background:var(--yellow);color:#141414;font-weight:700}
+.hud .lapno{color:var(--on-mute)}
+.hud a.alt{color:var(--on-mute);text-decoration:none}
+.prog{position:absolute;left:0;right:0;top:0;height:4px;background:rgba(244,241,234,.12);z-index:6}
+.prog i{display:block;height:100%;width:0;background:var(--yellow)}
+.marks{position:absolute;left:0;right:0;top:4px;height:8px;z-index:6;pointer-events:none}
+.marks i{position:absolute;top:0;width:2px;height:8px;background:rgba(244,241,234,.5)}
+.hint{position:absolute;left:50%;bottom:calc(var(--trackH) + 8px);transform:translateX(-50%);font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--on-mute);transition:opacity .4s;z-index:4;white-space:nowrap}
+.hint.hide{opacity:0}
+/* car */
+.car{position:absolute;left:14vw;bottom:calc(var(--trackH) * .42);width:220px;height:70px;z-index:4;transform-origin:50% 100%;transition:transform .15s}
+.car .body{position:absolute;left:30px;right:30px;bottom:18px;height:28px;background:var(--yellow);border-radius:14px 30px 8px 8px;box-shadow:0 6px 14px rgba(0,0,0,.4)}
+.car .body::before{content:"";position:absolute;left:0;right:0;bottom:-6px;height:8px;background:#141414;border-radius:4px}
+.car .nose{position:absolute;right:-10px;bottom:18px;width:60px;height:14px;background:var(--yellow);border-radius:0 10px 10px 0}
+.car .wing{position:absolute;left:0;bottom:36px;width:46px;height:10px;background:#E10600;border-radius:3px}
+.car .wing2{position:absolute;right:-14px;bottom:14px;width:40px;height:6px;background:#E10600;border-radius:3px}
+.car .helmet{position:absolute;left:92px;bottom:44px;width:22px;height:22px;border-radius:50%;background:#F4F1EA;border:3px solid #141414}
+.car .no{position:absolute;left:112px;bottom:22px;font-family:var(--display);font-size:16px;color:#141414;font-style:italic}
+.car .w{position:absolute;bottom:0;width:34px;height:34px;border-radius:50%;background:#141414;border:5px solid #2C2C2C;box-sizing:border-box}
+.car .w::after{content:"";position:absolute;inset:4px;border-radius:50%;background:conic-gradient(#9A9A95 0 25%,#3A3A3A 25% 50%,#9A9A95 50% 75%,#3A3A3A 75%)}
+.car .w1{left:36px}.car .w2{left:150px}
+.car.moving .w::after{animation:spin .35s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.car .speed{position:absolute;left:-90px;bottom:26px;width:80px;height:20px;opacity:0;transition:opacity .2s;background:repeating-linear-gradient(180deg,rgba(245,208,0,.6) 0 2px,transparent 2px 8px)}
+.car.moving .speed{opacity:1}
+.car.reverse{transform:scaleX(-1)}
+@media (max-width:760px){
+  .sector{padding-top:64px}
+  .lapcard{grid-template-columns:1fr;gap:12px}
+  .lapcard .poster{max-height:30vh}
+  .driver,.parts{grid-template-columns:1fr}
+  .stops{grid-template-columns:1fr;gap:8px}
+  .stop p{display:none}
+  .sector .lead{font-size:14px}
+  .card{padding:16px}
+  .car{width:150px;height:50px;left:8vw;bottom:calc(var(--trackH) * .40)}
+  .car .body{left:20px;right:20px;height:20px;bottom:12px}
+  .car .nose{height:10px;bottom:12px;width:40px}
+  .car .w{width:24px;height:24px;border-width:4px}.car .w1{left:24px}.car .w2{left:100px}
+  .car .helmet{left:62px;bottom:30px;width:16px;height:16px}.car .no{display:none}.car .wing{bottom:26px;width:30px;height:8px}.car .wing2{bottom:10px;width:28px}
+  .hud .alt{display:none}
+  .signpost .board{font-size:10px}
+  :root{--trackH:22vh}
+}
+@media (prefers-reduced-motion:reduce){.car .w::after{animation:none!important}.stage{position:static;height:auto}.world{position:static;flex-direction:column;transform:none!important}.sector{flex:none;height:auto;min-height:70vh}.spacer{display:none}.layer,.track,.car,.hint,.signpost{display:none}}
+</style>
+
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="prog" aria-hidden="true"><i id="prog"></i></div>
+  <div class="marks" id="marks" aria-hidden="true"></div>
+  <div class="layer stars" id="stars" aria-hidden="true"></div>
+  <div class="layer far" id="far" aria-hidden="true"></div>
+  <div class="layer mid" id="mid" aria-hidden="true"></div>
+  <div class="track" aria-hidden="true"><div class="kerb" id="kerb"></div><div class="dash" id="dash"></div><div class="edge" id="edge"></div></div>
+
+  <header class="hud">
+    <a class="brand" href="index.html">NGÔ MINH HIẾU <b>/ UX·UI</b></a>
+    <div class="right">
+      <span class="lapno" id="lapno">START</span>
+      <a class="alt" href="classic.html" data-i18n-race="classic">Classic layout</a>
+      <div class="lang" role="group" aria-label="Language"><button type="button" id="lang-en" aria-pressed="true">EN</button><button type="button" id="lang-vi" aria-pressed="false">VI</button></div>
+    </div>
+  </header>
+
+  <div class="world" id="world"></div>
+
+  <div class="car" id="car" aria-hidden="true"><span class="speed"></span><span class="wing"></span><span class="body"></span><span class="nose"></span><span class="wing2"></span><span class="helmet"></span><span class="no">06</span><span class="w w1"></span><span class="w w2"></span></div>
+  <div class="hint" id="hint">SCROLL TO DRIVE →</div>
+</div>
+<div class="spacer" id="spacer"></div>
+
+<script src="site.js"></script>
+<script>
+(function(){
+const stage=document.getElementById('stage'),world=document.getElementById('world'),spacer=document.getElementById('spacer'),car=document.getElementById('car'),prog=document.getElementById('prog'),marks=document.getElementById('marks'),hint=document.getElementById('hint'),lapno=document.getElementById('lapno');
+const far=document.getElementById('far'),mid=document.getElementById('mid'),stars=document.getElementById('stars'),kerb=document.getElementById('kerb'),dash=document.getElementById('dash'),edge=document.getElementById('edge');
+const svg=s=>'url("data:image/svg+xml,'+encodeURIComponent(s)+'")';
+/* far scenery: grandstands + floodlights */
+far.style.backgroundImage=svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 340" preserveAspectRatio="none"><rect x="0" y="200" width="1600" height="140" fill="#1F1E27"/><g fill="#2A2A33"><rect x="60" y="120" width="520" height="220"/><rect x="700" y="150" width="420" height="190"/><rect x="1200" y="110" width="360" height="230"/></g><g fill="#34343F"><rect x="60" y="120" width="520" height="14"/><rect x="700" y="150" width="420" height="14"/><rect x="1200" y="110" width="360" height="14"/></g><g fill="#3D3D4A"><rect x="80" y="150" width="480" height="8"/><rect x="80" y="176" width="480" height="8"/><rect x="80" y="202" width="480" height="8"/><rect x="720" y="180" width="380" height="8"/><rect x="720" y="206" width="380" height="8"/><rect x="1220" y="140" width="320" height="8"/><rect x="1220" y="166" width="320" height="8"/><rect x="1220" y="192" width="320" height="8"/></g><g stroke="#55525E" stroke-width="6"><line x1="640" y1="340" x2="640" y2="40"/><line x1="1160" y1="340" x2="1160" y2="60"/></g><g fill="#F5D000" opacity=".9"><rect x="616" y="30" width="48" height="12" rx="3"/><rect x="1136" y="50" width="48" height="12" rx="3"/></g><g fill="#F5D000" opacity=".08"><polygon points="640,42 520,340 760,340"/><polygon points="1160,62 1040,340 1280,340"/></g></svg>');
+/* mid: barriers + marshals */
+mid.style.backgroundImage=svg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><rect x="0" y="70" width="1200" height="50" fill="#2E2C36"/><g fill="#3A3842"><rect x="0" y="62" width="1200" height="8"/></g><g><rect x="0" y="84" width="1200" height="14" fill="#E10600"/><g fill="#F4F1EA"><rect x="0" y="84" width="60" height="14"/><rect x="120" y="84" width="60" height="14"/><rect x="240" y="84" width="60" height="14"/><rect x="360" y="84" width="60" height="14"/><rect x="480" y="84" width="60" height="14"/><rect x="600" y="84" width="60" height="14"/><rect x="720" y="84" width="60" height="14"/><rect x="840" y="84" width="60" height="14"/><rect x="960" y="84" width="60" height="14"/><rect x="1080" y="84" width="60" height="14"/></g></g><g fill="#9A9A95"><rect x="300" y="30" width="6" height="40"/><rect x="900" y="30" width="6" height="40"/></g><g fill="#F5D000"><rect x="306" y="30" width="26" height="16"/><rect x="906" y="30" width="26" height="16"/></g></svg>');
+
+function build(){
+  const t=UI[lang],r=t.race;const sec=[];
+  const sign=s=>`<div class="signpost"><div class="board">${s}</div><div class="pole"></div></div>`;
+  sec.push(`<section class="sector" id="s-start"><div class="in"><p class="mono">${esc(t['hero.eyebrow'])}</p><h1 style="margin-top:14px">Ngô Minh<br>Hiếu</h1><p class="lead" style="font-size:clamp(17px,2.2vw,24px);color:var(--on)">${esc(t['hero.tag'])}</p><p class="lead">${esc(t['hero.sub'])}</p></div>${sign('START · 06 '+r.laps.toUpperCase())}</section>`);
+  sec.push(`<section class="sector" id="s-driver"><div class="in card driver"><div><p class="mono">${r.driver}</p><h2 style="margin-top:8px">${t['about.title']}</h2><p class="lead">${esc(t['about.bio'])}</p></div><div class="stats"><div><div class="k">${t['hero.k1']}</div><div class="v">06</div></div><div><div class="k">${r.season}</div><div class="v">2024 — 2026</div></div><div><div class="k">${r.base}</div><div class="v">HANOI</div></div><div><div class="k">${r.edu}</div><div class="v">FPT UNIVERSITY</div></div></div></div>${sign('SECTOR 01 · '+r.driver.toUpperCase())}</section>`);
+  const stop=x=>`<div class="stop"><span class="when">${esc(x[0])}</span><b>${esc(x[1])}</b><span>${esc(x[2])}</span><p>${esc(x[3])}</p></div>`;
+  sec.push(`<section class="sector" id="s-pit"><div class="in card"><p class="mono">${r.pit}</p><h2 style="margin:8px 0 14px">${t['about.exp']}</h2><div class="stops">${t.exp.map(stop).join('')}</div></div>${sign('PIT LANE')}</section>`);
+  sec.push(`<section class="sector" id="s-parts"><div class="in card parts"><div><p class="mono">${r.parts}</p><h2 style="margin-top:8px">${t['about.skills']}</h2><div class="chips">${t.skills.map(s=>`<span>${esc(s)}</span>`).join('')}</div></div><div><p class="mono">${t['about.tools']}</p><div class="chips" style="margin-top:14px"><span>Figma</span><span>Illustrator</span><span>Photoshop</span><span>CapCut</span></div><p class="mono" style="margin-top:22px">${t['about.edu']}</p><div class="stop" style="margin-top:10px">${t.edu.map(e=>`<span class="when">${esc(e[0])}</span><b>${esc(e[1])}</b><span>${esc(e[2])}</span><p>${esc(e[3])}</p>`).join('')}</div></div></div>${sign('UPGRADES')}</section>`);
+  P.forEach((p,i)=>{const d=p[lang];sec.push(`<section class="sector" id="s-${p.id}" style="--c:${p.c}"><div class="in card lapcard"><div class="poster"><img src="${p.hero}" alt="${p.name}" loading="lazy"></div><div><div class="n"><span class="big">${pad(i+1)}</span><span class="mono">${t.lap} ${pad(i+1)} / 06</span></div><h2>${p.name}</h2><p class="kick">${esc(d.tag)}</p><p class="kick" style="font-size:13px">${esc(d.kicker)}</p><div class="chips"><span>${esc(d.meta[0])}</span><span>${esc(d.meta[1])}</span><span>${esc(d.meta[2])}</span><span>${esc(d.meta[3])}</span></div><a class="btn" href="${p.id}.html">${r.open} →</a></div></div>${sign(t.lap.toUpperCase()+' '+pad(i+1)+' · '+p.name.toUpperCase())}</section>`);});
+  sec.push(`<section class="sector" id="s-finish"><div class="in card"><p class="mono">${r.flag}</p><h2 style="margin-top:8px">${esc(r.thanks)}</h2><p class="lead">${esc(t['fin.lead'])}</p><div class="cgrid"><div class="stop"><span class="when">EMAIL</span><b style="font-family:var(--mono)">ngohieu612003@gmail.com</b></div><div class="stop"><span class="when">BEHANCE</span><b style="font-family:var(--mono)"><a href="https://www.behance.net/hiungminh1" target="_blank" rel="noopener" style="text-decoration:none">behance.net/hiungminh1</a></b></div><div class="stop"><span class="when">${t['fin.k3']}</span><b style="font-family:var(--mono)">0922 526 686</b></div><div class="stop"><span class="when">${t['fin.k4']}</span><b style="font-family:var(--mono)">2024 — 2026</b></div></div></div>${sign(r.finishT.toUpperCase())}</section>`);
+  world.innerHTML=sec.join('');
+  document.querySelector('.hud .alt').textContent=r.classic;
+  hint.textContent=(innerWidth<760?r.hintM:r.hint).toUpperCase();
+  layout();
+}
+let W=0,vw=0,max=0,names=[];
+function layout(){vw=innerWidth;const secs=[...world.children];secs.forEach(s=>s.style.width=vw+'px');W=secs.length*vw;max=W-vw;spacer.style.height=(max)+'px';
+  names=secs.map(s=>s.id.replace('s-',''));marks.innerHTML=secs.map((s,i)=>`<i style="left:${(i/(secs.length-1))*100}%"></i>`).join('');update(true);}
+let lastX=0,lastT=0,stillTimer=null;
+function update(force){const y=Math.max(0,Math.min(max,scrollY));world.style.transform=`translate3d(${-y}px,0,0)`;far.style.transform=`translate3d(${-y*.18}px,0,0)`;mid.style.transform=`translate3d(${-y*.55}px,0,0)`;stars.style.transform=`translate3d(${-y*.06}px,0,0)`;kerb.style.backgroundPosition=`${-y}px 0`;dash.style.backgroundPosition=`${-y}px 0`;edge.style.backgroundPosition=`${-y*1.2}px 0`;
+  prog.style.width=(max?y/max*100:0)+'%';const idx=Math.min(names.length-1,Math.round(y/vw));const n=names[idx];const pi=P.findIndex(p=>p.id===n);lapno.textContent=pi>=0?UI[lang].lap.toUpperCase()+' '+pad(pi+1)+' / 06':(n==='start'?'START':n==='finish'?'FINISH':n.toUpperCase());
+  const now=performance.now();const dx=y-lastX;const dt=Math.max(16,now-lastT);const v=dx/dt;if(Math.abs(dx)>1){car.classList.add('moving');car.classList.toggle('reverse',dx<0);car.style.transform=(dx<0?'scaleX(-1) ':'')+`rotate(${Math.max(-4,Math.min(4,-v*3))}deg)`;hint.classList.add('hide');clearTimeout(stillTimer);stillTimer=setTimeout(()=>{car.classList.remove('moving');car.style.transform=car.classList.contains('reverse')?'scaleX(-1)':'';},140);}
+  lastX=y;lastT=now;}
+addEventListener('scroll',()=>update(),{passive:true});addEventListener('resize',layout);
+addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown'){scrollBy({top:vw*.5,behavior:'smooth'});e.preventDefault();}if(e.key==='ArrowLeft'||e.key==='ArrowUp'){scrollBy({top:-vw*.5,behavior:'smooth'});e.preventDefault();}});
+addEventListener('wheel',e=>{if(Math.abs(e.deltaX)>Math.abs(e.deltaY)){scrollBy({top:e.deltaX});e.preventDefault();}},{passive:false});
+window.renderRace=build;
+})();
+</script>
+
+</body>
+</html>

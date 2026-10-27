@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ngô Minh Hiếu — Portfolio (classic)</title>
+<style>img{max-width:100%}</style>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="site.css">
+
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top">NGÔ MINH HIẾU <b>/ UX·UI</b></a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#map" data-i18n="nav.laps">Laps</a>
+      <a href="#about" data-i18n="nav.about">About</a>
+      <a href="#finish" data-i18n="nav.contact">Contact</a>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" id="lang-en" aria-pressed="true">EN</button>
+        <button type="button" id="lang-vi" aria-pressed="false">VI</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="lanes" aria-hidden="true"></div>
+  <div class="wrap">
+    <div>
+      <p class="mono eyebrow" data-i18n="hero.eyebrow">Lights out / UX·UI Designer · Portfolio 2024—2026</p>
+      <h1 style="margin-top:18px">Ngô Minh<br>Hiếu</h1>
+      <p class="tag" data-i18n="hero.tag">From understanding the problem to the product interface.</p>
+      <p class="sub" data-i18n="hero.sub">UX/UI designer in Hanoi with a Digital Art &amp; Design background. Six laps of work: travel, community, park operations, ticketing, music and event campaigns.</p>
+      <div class="board">
+        <div><div class="k" data-i18n="hero.k1">Laps</div><div class="v">06</div></div>
+        <div><div class="k" data-i18n="hero.k2">Season</div><div class="v">2024 — 2026</div></div>
+        <div><div class="k" data-i18n="hero.k3">Pit lane</div><div class="v" data-i18n="hero.v3">HANOI · FIGMA</div></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="lights" id="lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <span class="mono" id="lights-label" data-i18n="hero.lights">Starting grid · 06 laps</span>
+      <div class="track" style="width:100%" aria-hidden="true"><span class="car"></span></div>
+    </div>
+  </div>
+  <div class="kerb" aria-hidden="true"></div>
+</section>
+
+<section class="map wrap" id="map">
+  <div class="sec-head">
+    <div>
+      <p class="mono eyebrow" style="color:var(--mute)" data-i18n="map.eyebrow">02 / Contents · Race map</p>
+      <h2 data-i18n="map.title">06 laps.</h2>
+    </div>
+    <p class="mono" data-i18n="map.note">Selected work · Tap a lap to jump</p>
+  </div>
+  <div class="laps" id="laps"></div>
+</section>
+
+
+<section class="about" id="about">
+  <div class="wrap grid">
+    <div>
+      <p class="mono" data-i18n="about.eyebrow">01 / Driver sheet</p>
+      <h2 style="margin-top:12px" data-i18n="about.title">About me</h2>
+      <p class="bio" data-i18n="about.bio">I'm a UX/UI designer with a background in Digital Art &amp; Design from FPT University. I design mobile apps, websites and interface systems, and work closely with developers to bring design solutions to life.</p>
+      <div style="margin-top:28px"><p class="mono" data-i18n="about.tools">Tools</p><div class="chips"><span>Figma</span><span>Illustrator</span><span>Photoshop</span><span>CapCut</span></div></div>
+      <div style="margin-top:20px"><p class="mono" data-i18n="about.skills">Skills</p><div class="chips" id="skills"></div></div>
+    </div>
+    <div class="stack">
+      <div><p class="mono" data-i18n="about.exp">Experience</p><div class="rows" id="exp"></div></div>
+      <div><p class="mono" data-i18n="about.edu">Education</p><div class="rows" id="edu"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="finish" id="finish">
+  <div class="check" style="margin:-56px 0 40px" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="mono eyebrow" data-i18n="fin.eyebrow">Chequered flag / Thank you</p>
+    <h2 style="margin-top:14px" data-i18n="fin.title">Thank you for going the whole distance.</h2>
+    <p class="lead" data-i18n="fin.lead">Six projects, one approach: understand the problem properly before drawing the interface. Open to full-time roles and project work.</p>
+    <div class="contact">
+      <div><span class="k">EMAIL</span><span class="v" id="email">ngohieu612003@gmail.com</span><button type="button" class="copy" id="copy-email" data-i18n="fin.copy">Copy</button></div>
+      <div><span class="k">BEHANCE</span><span class="v"><a href="https://www.behance.net/hiungminh1" target="_blank" rel="noopener">behance.net/hiungminh1</a></span></div>
+      <div><span class="k" data-i18n="fin.k3">PHONE</span><span class="v">0922 526 686</span></div>
+      <div><span class="k" data-i18n="fin.k4">SEASON</span><span class="v">2024 — 2026</span></div>
+    </div>
+    <div class="recap" aria-hidden="true"><i style="background:var(--vievu)"></i><i style="background:var(--mayogu)"></i><i style="background:var(--ecobi)"></i><i style="background:var(--mayticket)"></i><i style="background:var(--retrotunes)"></i><i style="background:var(--rikkeisoft)"></i></div>
+    <div class="recap-l" aria-hidden="true"><span>Lap 01 · VieVu</span><span>Lap 02 · MAYogu</span><span>Lap 03 · ECOBI</span><span>Lap 04 · MAYticket</span><span>Lap 05 · RetroTunes</span><span>Lap 06 · Rikkeisoft</span></div>
+    <div class="foot"><a href="#top" data-i18n="fin.back">← Back to the starting grid</a><span>NGÔ MINH HIẾU — UX/UI DESIGN — PORTFOLIO 2026</span></div>
+  </div>
+  <div class="kerb" style="margin-top:40px" aria-hidden="true"></div>
+</section>
+</main>
+
+<script src="site.js"></script>
+
+</body>
+</html>
