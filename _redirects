@@ -1,0 +1,2 @@
+# Project pages added via the CMS have no file of their own: serve project.html (existing files still win)
+/*   /project.html   200
